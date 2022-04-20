@@ -1,45 +1,3 @@
-"""
-Created on March 2018
-
-
-@author: 
-	
-▒█▀▀█ █▀▀█ █▀▀▄ █▀▀ ▒█▀▀█ █░░█ ▀▀█▀▀ █▀▀ 
-▒█░░░ █░░█ █░░█ █▀▀ ▒█▀▀▄ █▄▄█ ░░█░░ █▀▀ 
-▒█▄▄█ ▀▀▀▀ ▀▀▀░ ▀▀▀ ▒█▄▄█ ▄▄▄█ ░░▀░░ ▀▀▀ 
-
-
-"""
-
-#################################################################################################################################################
-
-
-
-
-"""
-●   A web app to help employers by analysing resumes and CVs, surfacing candidates that best match the position and filtering out those who don't.
-●   Used recommendation engine techniques such as KNN, content based filtering for fuzzy matching job description with multiple resumes.
-
-Prerequisites
-
-    Gensim
-    Numpy==1.11.3
-    Pandas
-    Sklearn
-    Dash
-    Antiwords
-    autocorrect
-
-
-
-
-        To Run this code: 
-            # python app.py
-
-	And open URL localhost:5000
-
-
-"""
 
 import glob
 import os
@@ -66,8 +24,6 @@ app.config.from_object(__name__) # load config from this file , flaskr.py
 
 # Load default config and override config from an environment variable
 app.config.update(dict(
-    USERNAME='ankit',
-    PASSWORD='Singh',
     SECRET_KEY='development key',
 ))
 
@@ -84,36 +40,9 @@ def getfilepath(loc):
     return temp[-1]
     
 
-
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    error = None
-    if request.method == 'POST':
-        if request.form['username'] != app.config['USERNAME']:
-            error = 'Invalid username'
-        elif request.form['password'] !=app.config['PASSWORD']:
-            error = 'Invalid password'
-        else:
-            session['logged_in'] = True
-            flash('You were logged in')
-            return redirect(url_for('home'))
-    return render_template('login.html', error=error)
-
-@app.route('/logout')
-def logout():
-    session.pop('logged_in', None)
-    flash('You were logged out')
-    return redirect(url_for('home'))
-
-
 @app.route('/')
 def home():
-    #x = []
-    #for file in glob.glob("./Job_Description/*.txt"):
-     #   res = jd(file)
-      #  x.append(jd(getfilepath(file)))
-    #print(x)
+   
     return render_template('index.html')
 
 
@@ -150,34 +79,14 @@ def uploaddes():
 
 @app.route('/results', methods=['GET', 'POST'])
 def res():
-    #if request.method == 'POST':
-       # jobfile = request.form['des']
-       # print(jobfile)
-        #flask_return = screen.res(jobfile)
         flask_return = screen.res()
         print(flask_return)
         return render_template('result.html', results = flask_return)
 
 
 
-@app.route('/resultscreen' ,  methods = ['POST', 'GET'])
-def resultscreen():
-    if request.method == 'POST':
-        jobfile = request.form.get('Name')
-        print(jobfile)
-        flask_return = screen.res(jobfile)
-        return render_template('result.html', results = flask_return)
 
 
-
-@app.route('/resultsearch' ,methods = ['POST', 'GET'])
-def resultsearch():
-    if request.method == 'POST':
-        search_st = request.form.get('Name')
-        print(search_st)
-    result = search.res(search_st)
-    # return result
-    return render_template('result.html', results = result)
 
 
 @app.route('/Original_Resume/<path:filename>')

@@ -67,18 +67,21 @@ def res():
                     # page = read_pdf.getPage(0)
                     # page_content = page.extractText()
                     # Resumes.append(Temp_pdf)
-
+                    print("ankit")
                     number_of_pages = read_pdf.getNumPages()
                     for page_number in range(number_of_pages): 
 
                         page = read_pdf.getPage(page_number)
                         page_content = page.extractText()
+                        
                         page_content = page_content.replace('\n', ' ')
+                       # print(page_content)
+                        print('\n')
                         # page_content.replace("\r", "")
                         Temp_pdf = str(Temp_pdf) + str(page_content)
                         # Temp_pdf.append(page_content)
                         # print(Temp_pdf)
-                    Resumes.extend([Temp_pdf])
+                    Resumes.append([Temp_pdf])
                     Temp_pdf = ''
                     # f = open(str(i)+str("+") , 'w')
                     # f.write(page_content)
@@ -97,7 +100,7 @@ def res():
             except Exception as e: print(e)
                 
                 
-        if Temp[1] == "docx" or Temp[1] == "Docx" or Temp[1] == "DOCX":
+        if Temp[1] == "docx" or Temp[1] == "Docx" or Temp[1] == "DOCX": 
             print("This is DOCX" , i)
             try:
                 a = textract.process(i)
@@ -116,8 +119,10 @@ def res():
 
     #print(Ordered_list_Resume)
     print("Done Parsing.")
-
-         
+    print(len(Resumes))
+    #for i in range(len(Resumes)):
+        #print(Resumes[i])
+        #print("\n")   
     #print(Resumes)
     Job_Desc = 0
     LIST_OF_TXT_FILES = []
@@ -128,7 +133,7 @@ def res():
         
     try:
         tttt = str(text)
-        tttt = summarize(tttt)
+        tttt = summarize(tttt,word_count=50)
         text = [tttt]
     except:
         text = 'None'
@@ -136,7 +141,8 @@ def res():
     f.close()
 
     vectorizer = TfidfVectorizer(stop_words='english')
-    print(text)
+    #print(vectorizer)
+    #print(text)
     vectorizer.fit(text)
     vector = vectorizer.transform(text)
     #print("ankit")
@@ -147,26 +153,29 @@ def res():
     # print("This is job desc : " , Job_Desc)
 
     os.chdir('../')
-    for i in Resumes:
+    for i in range(len(Resumes)):
 
-        text = i
+        text = Resumes[i]
         tttt = str(text)
+        print(tttt)
+        print('/n')
         try:
-            tttt = summarize(tttt) 
-            text = [tttt]
-            vector = vectorizer.transform(text)
+          tttt = summarize(tttt,word_count=50) 
+          text = [tttt]
+          vector = vectorizer.transform(text)
 
-            aaa = vector.toarray()
-            Resume_Vector.append(vector.toarray())
+          aaa = vector.toarray()
+          Resume_Vector.append(vector.toarray())
         except:
+            print("singh")
             pass
-    # print(Resume_Vector)
-
+    #print(Resume_Vector)
+    print(len(Resume_Vector))
     for i in Resume_Vector:
 
         samples = i
         neigh = NearestNeighbors(n_neighbors=1)
-        neigh.fit(samples) 
+        neigh.fit(samples)
         NearestNeighbors(algorithm='auto', leaf_size=30)
 
         Ordered_list_Resume_Score.extend(neigh.kneighbors(Job_Desc)[0][0].tolist())
